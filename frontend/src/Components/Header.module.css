@@ -1,0 +1,16 @@
+.header {
+  width: 100vw;
+  height: 7vh; /* responsive height */
+  background: #FCFCFC;
+  color: #333;
+}
+
+.left{
+    height: 100%;
+    width: 50%;
+}
+
+.right{
+    height: 100%;
+    width: 50%;
+}
