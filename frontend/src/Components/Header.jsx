@@ -1,7 +1,4 @@
 import styles from "./Header.module.css";
-
-import { useRef } from "react";
-
 import IconButton from "./IconButton";
 
 import {
@@ -10,99 +7,73 @@ import {
 } from "react-icons/bs";
 import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
 import { TbFileUpload } from "react-icons/tb";
+import { useRef } from "react";
 
 const Header = ({
   toggleLeftSideBar,
   toggleRightSideBar,
   toggleDarkMode,
+  fileName,
   onToggleLeft,
   onToggleRight,
   onToggleDark,
+  onFileChange,
 }) => {
   const fileInputRef = useRef(null);
 
   const handleFileClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    const res = await fetch("http://127.0.0.1:5000/upload", {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await res.json();
-    console.log(data);
+    fileInputRef.current?.click();
   };
 
   return (
     <header
-      className={`${styles.header} px-2 flex justify-between items-center box-border border-b border-gray-300`}
-      styles={{ backgroundColor: "#FCFCFC" }}
+      className={`${styles.header} px-2 flex justify-between items-center border-b border-gray-300`}
+      style={{ backgroundColor: "#FCFCFC" }}
     >
-      <div className={`${styles.left} flex items-center gap-1`}>
-        <IconButton
-          onClick={onToggleLeft}
-          title={toggleLeftSideBar ? "Hide left sidebar" : "Show left sidebar"}
-        >
+      {/* LEFT */}
+      <div className="flex items-center gap-2">
+        <IconButton onClick={onToggleLeft} title="Toggle left sidebar">
           {toggleLeftSideBar ? (
-            <BsReverseLayoutSidebarInsetReverse className="text-[#222] text-xl" />
+            <BsReverseLayoutSidebarInsetReverse className="text-xl" />
           ) : (
-            <BsLayoutSidebarInset className="text-[#222] text-xl" />
+            <BsLayoutSidebarInset className="text-xl" />
           )}
         </IconButton>
 
         <div
           className="max-w-[200px] truncate text-[0.97rem]"
-          title="No file selected"
+          title={fileName || "No file selected"}
         >
-          No File
+          {fileName || "No File"}
         </div>
       </div>
 
-      <div className={`${styles.right} flex justify-end items-center gap-1`}>
-        <>
-          <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            onChange={handleFileChange}
-          />
+      {/* RIGHT */}
+      <div className="flex items-center gap-1">
+        <input
+          type="file"
+          ref={fileInputRef}
+          className="hidden"
+          onChange={onFileChange}
+        />
 
-          <IconButton onClick={handleFileClick} title="Open file">
-            <TbFileUpload className="text-[#222] text-[1.40rem]" />
-          </IconButton>
-        </>
+        <IconButton onClick={handleFileClick} title="Open file">
+          <TbFileUpload className="text-xl" />
+        </IconButton>
 
-        <IconButton
-          onClick={onToggleRight}
-          title={
-            toggleRightSideBar ? "Hide right sidebar" : "Show right sidebar"
-          }
-        >
+        <IconButton onClick={onToggleRight} title="Toggle right sidebar">
           {toggleRightSideBar ? (
-            <BsLayoutSidebarInset className="text-[#222] text-xl" />
+            <BsLayoutSidebarInset className="text-xl" />
           ) : (
-            <BsReverseLayoutSidebarInsetReverse className="text-[#222] text-xl" />
+            <BsReverseLayoutSidebarInsetReverse className="text-xl" />
           )}
         </IconButton>
 
-        <IconButton
-          onClick={onToggleDark}
-          title={
-            toggleDarkMode ? "Switch to light mode" : "Switch to dark mode"
-          }
-        >
+        <IconButton onClick={onToggleDark} title="Toggle theme">
           {toggleDarkMode ? (
-            <MdOutlineDarkMode className="text-yellow-400 text-xl gap-1" />
+            <MdOutlineDarkMode className="text-yellow-400 text-xl" />
           ) : (
-            <MdDarkMode className="text-[#222] text-xl" />
+            <MdDarkMode className="text-xl" />
           )}
         </IconButton>
       </div>

@@ -1,104 +1,82 @@
 import Header from "./Components/Header";
 import Sidebar from "./Components/Sidebar";
 import Main from "./Components/Main";
+import Resizer from "./Components/Resizer";
 
-import { useState, useEffect, useRef } from "react";
-
-const MIN_WIDTH = 250;
-const MAX_WIDTH = 800;
+import { useState, useRef } from "react";
+import useResizablePanels from "./hooks/useResizablePanels";
+import { uploadFile } from "./utils/fileUtils";
 
 function App() {
   const [toggleLeftSideBar, setToggleLeftSideBar] = useState(false);
   const [toggleRightSideBar, setToggleRightSideBar] = useState(false);
   const [toggleDarkMode, setToggleDarkMode] = useState(false);
 
-  const [sidebarWidth, setSidebarWidth] = useState(MIN_WIDTH); // px
+  const [fileContent, setFileContent] = useState(null);
+  const [fileName, setFileName] = useState("");
 
   const containerRef = useRef(null);
-  const sidebarRef = useRef(null);
-  const isResizingRef = useRef(false);
 
-  const handleToggleLeftSidebar = () => {
-    setToggleLeftSideBar((prev) => !prev);
+  const {
+    leftSidebarRef,
+    rightSidebarRef,
+    leftWidth,
+    rightWidth,
+    startResizing,
+  } = useResizablePanels(containerRef);
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setFileName(file.name);
+
+    const content = await uploadFile(file);
+    setFileContent(content);
   };
-
-  const handleToggleRightSidebar = () => {
-    setToggleRightSideBar((prev) => !prev);
-  };
-
-  const handleToggleDarkMode = () => {
-    setToggleDarkMode((prev) => !prev);
-  };
-
-  const startResizing = (e) => {
-    e.preventDefault();
-    if (!toggleLeftSideBar) return;
-    isResizingRef.current = true;
-  };
-
-  useEffect(() => {
-    const onMouseMove = (e) => {
-      if (!isResizingRef.current) return;
-      if (!containerRef.current || !sidebarRef.current) return;
-
-      const rect = containerRef.current.getBoundingClientRect();
-      const newWidth = Math.max(
-        MIN_WIDTH,
-        Math.min(MAX_WIDTH, e.clientX - rect.left),
-      );
-
-      sidebarRef.current.style.width = `${newWidth}px`;
-    };
-
-    const onMouseUp = (e) => {
-      if (!isResizingRef.current) return;
-
-      isResizingRef.current = false;
-
-      const rect = containerRef.current.getBoundingClientRect();
-      const finalWidth = Math.max(
-        MIN_WIDTH,
-        Math.min(MAX_WIDTH, e.clientX - rect.left),
-      );
-
-      setSidebarWidth(finalWidth);
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
-  }, []);
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col overflow-hidden">
       <Header
         toggleLeftSideBar={toggleLeftSideBar}
         toggleRightSideBar={toggleRightSideBar}
         toggleDarkMode={toggleDarkMode}
-        onToggleLeft={handleToggleLeftSidebar}
-        onToggleRight={handleToggleRightSidebar}
-        onToggleDark={handleToggleDarkMode}
+        fileName={fileName}
+        onToggleLeft={() => setToggleLeftSideBar((p) => !p)}
+        onToggleRight={() => setToggleRightSideBar((p) => !p)}
+        onToggleDark={() => setToggleDarkMode((p) => !p)}
+        onFileChange={handleFileChange}
       />
 
-      <div ref={containerRef} className="flex flex-1 select-none">
+      <div ref={containerRef} className="flex flex-1 overflow-hidden">
+        {/* LEFT */}
         <Sidebar
           isOpen={toggleLeftSideBar}
-          width={sidebarWidth}
-          sidebarRef={sidebarRef}
+          width={leftWidth}
+          sidebarRef={leftSidebarRef}
         />
 
-        {toggleLeftSideBar && (
-          <div
-            onMouseDown={startResizing}
-            className="w-1 cursor-col-resize bg-gray-300 hover:bg-gray-400 active:bg-gray-500"
-          />
-        )}
+        <Resizer
+          isVisible={toggleLeftSideBar}
+          side="left"
+          onResizeStart={startResizing}
+        />
 
-        <Main />
+        {/* MAIN */}
+        <Main file={fileContent} onFileChange={handleFileChange} />
+
+        <Resizer
+          isVisible={toggleRightSideBar}
+          side="right"
+          onResizeStart={startResizing}
+        />
+
+        {/* RIGHT */}
+        <Sidebar
+          isOpen={toggleRightSideBar}
+          width={rightWidth}
+          sidebarRef={rightSidebarRef}
+        />
       </div>
     </div>
   );
