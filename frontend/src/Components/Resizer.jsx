@@ -1,6 +1,7 @@
 const Resizer = ({ isVisible, side, onResizeStart }) => {
   if (!isVisible) return null;
 
+
   return (
     <div
       onMouseDown={(e) => onResizeStart(side, e)}

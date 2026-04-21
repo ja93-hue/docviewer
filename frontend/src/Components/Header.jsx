@@ -5,6 +5,7 @@ import {
   BsLayoutSidebarInset,
   BsReverseLayoutSidebarInsetReverse,
 } from "react-icons/bs";
+
 import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
 import { TbFileUpload } from "react-icons/tb";
 import { useRef } from "react";
@@ -58,7 +59,7 @@ const Header = ({
         />
 
         <IconButton onClick={handleFileClick} title="Open file">
-          <TbFileUpload className="text-xl" />
+          <TbFileUpload className="text-[1.40rem]" />
         </IconButton>
 
         <IconButton onClick={onToggleRight} title="Toggle right sidebar">

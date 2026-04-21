@@ -23,7 +23,12 @@ function App() {
     leftWidth,
     rightWidth,
     startResizing,
-  } = useResizablePanels(containerRef);
+  } = useResizablePanels(containerRef, {
+    toggleLeftSideBar,
+    toggleRightSideBar,
+    setToggleLeftSideBar,
+    setToggleRightSideBar,
+  });
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -53,6 +58,7 @@ function App() {
         <Sidebar
           isOpen={toggleLeftSideBar}
           width={leftWidth}
+          bgColor="bg-[#F6F6F6]"
           sidebarRef={leftSidebarRef}
         />
 
@@ -75,6 +81,7 @@ function App() {
         <Sidebar
           isOpen={toggleRightSideBar}
           width={rightWidth}
+          bgColor="bg-[#F6F6F6]"
           sidebarRef={rightSidebarRef}
         />
       </div>

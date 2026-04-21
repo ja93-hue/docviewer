@@ -14,7 +14,7 @@ export default function useResizablePanels(
 ) {
   const leftSidebarRef = useRef(null);
   const rightSidebarRef = useRef(null);
-  const isResizingRef = useRef(null);
+  const isResizingRef = useRef(null); // "left" | "right" | null
 
   const [leftWidth, setLeftWidth] = useState(MIN_WIDTH);
   const [rightWidth, setRightWidth] = useState(MIN_WIDTH);
@@ -31,8 +31,10 @@ export default function useResizablePanels(
       const rect = containerRef.current.getBoundingClientRect();
       const totalWidth = rect.width;
 
+      let newWidth;
+
       if (isResizingRef.current === "left") {
-        let newWidth = e.clientX - rect.left;
+        newWidth = e.clientX - rect.left;
 
         const maxAllowed = totalWidth - rightWidth - MIN_WIDTH;
         newWidth = Math.min(newWidth, maxAllowed);
@@ -44,7 +46,7 @@ export default function useResizablePanels(
       }
 
       if (isResizingRef.current === "right") {
-        let newWidth = rect.right - e.clientX;
+        newWidth = rect.right - e.clientX;
 
         const maxAllowed = totalWidth - leftWidth - MIN_WIDTH;
         newWidth = Math.min(newWidth, maxAllowed);
@@ -66,9 +68,6 @@ export default function useResizablePanels(
 
       if (isResizingRef.current === "left") {
         finalWidth = e.clientX - rect.left;
-
-        const maxAllowed = containerWidth - rightWidth - MIN_WIDTH;
-        finalWidth = Math.min(finalWidth, maxAllowed);
         finalWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, finalWidth));
 
         setLeftWidth(finalWidth);
@@ -80,15 +79,12 @@ export default function useResizablePanels(
           toggleRightSideBar
         ) {
           setToggleRightSideBar(false);
-          setRightWidth(MIN_WIDTH);
+          rightWidth = MIN_WIDTH;
         }
       }
 
       if (isResizingRef.current === "right") {
         finalWidth = rect.right - e.clientX;
-
-        const maxAllowed = containerWidth - leftWidth - MIN_WIDTH;
-        finalWidth = Math.min(finalWidth, maxAllowed);
         finalWidth = Math.max(MIN_WIDTH, Math.min(MAX_WIDTH, finalWidth));
 
         setRightWidth(finalWidth);
@@ -100,7 +96,7 @@ export default function useResizablePanels(
           toggleRightSideBar
         ) {
           setToggleLeftSideBar(false);
-          setLeftWidth(MIN_WIDTH);
+          leftWidth = MIN_WIDTH;
         }
       }
 
@@ -115,13 +111,11 @@ export default function useResizablePanels(
       window.removeEventListener("mouseup", onMouseUp);
     };
   }, [
-    containerRef,
     leftWidth,
     rightWidth,
+    containerRef,
     toggleLeftSideBar,
     toggleRightSideBar,
-    setToggleLeftSideBar,
-    setToggleRightSideBar,
   ]);
 
   return {
