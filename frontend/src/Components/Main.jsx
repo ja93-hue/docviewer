@@ -1,6 +1,9 @@
-const Main = ({ file, onFileChange }) => {
+import "../global.css";
+
+const Main = ({ file, onFileChange, bgColor }) => {
+  //
   return (
-    <main className="flex flex-1 min-w-0 min-h-0 bg-white p-4 overflow-y-auto">
+    <main className={`flex flex-1 min-w-0 min-h-0 ${bgColor} p-4 overflow-y-auto custom-scrollbar`}>
       {!file ? (
         <div className="flex w-full h-full items-center justify-center">
           <label
@@ -19,7 +22,7 @@ const Main = ({ file, onFileChange }) => {
         </div>
       ) : (
         <pre className="max-w-3xl mx-auto w-full text-gray-800 leading-7 text-[15px] whitespace-pre-wrap break-words">
-          {file}
+          {file?.content}
         </pre>
       )}
     </main>

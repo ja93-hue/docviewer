@@ -11,6 +11,7 @@ import { TbFileUpload } from "react-icons/tb";
 import { useRef } from "react";
 
 const Header = ({
+  bgColor,
   toggleLeftSideBar,
   toggleRightSideBar,
   toggleDarkMode,
@@ -28,8 +29,7 @@ const Header = ({
 
   return (
     <header
-      className={`${styles.header} px-2 flex justify-between items-center border-b border-gray-300`}
-      style={{ backgroundColor: "#FCFCFC" }}
+      className={`${styles.header} px-2 flex justify-between ${bgColor} items-center border-b border-gray-300`}
     >
       {/* LEFT */}
       <div className="flex items-center gap-2">

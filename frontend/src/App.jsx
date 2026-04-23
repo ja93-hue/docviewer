@@ -2,6 +2,7 @@ import Header from "./Components/Header";
 import Sidebar from "./Components/Sidebar";
 import Main from "./Components/Main";
 import Resizer from "./Components/Resizer";
+import FileBox from "./Components/FileBox";
 
 import { useState, useRef } from "react";
 import useResizablePanels from "./hooks/useResizablePanels";
@@ -12,8 +13,8 @@ function App() {
   const [toggleRightSideBar, setToggleRightSideBar] = useState(false);
   const [toggleDarkMode, setToggleDarkMode] = useState(false);
 
-  const [fileContent, setFileContent] = useState(null);
-  const [fileName, setFileName] = useState("");
+  const [files, setFiles] = useState([]);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const containerRef = useRef(null);
 
@@ -34,19 +35,44 @@ function App() {
     const file = e.target.files[0];
     if (!file) return;
 
-    setFileName(file.name);
+    const data = await uploadFile(file);
 
-    const content = await uploadFile(file);
-    setFileContent(content);
+    if (!data || !data.filename || !data.content) {
+      console.error("Invalid response:", data);
+      return;
+    }
+
+    const newFile = {
+      id: crypto.randomUUID(),
+      filename: data.filename,
+      content: data.content,
+    };
+
+    setFiles((prev) => [...prev, newFile]);
+    setSelectedFile(newFile);
+  };
+
+  // HANDLE DELETE
+  const handleDelete = (id) => {
+    setFiles((prev) => {
+      const updated = prev.filter((f) => f.id !== id);
+
+      setSelectedFile((current) =>
+        current?.id === id ? updated[0] || null : current,
+      );
+
+      return updated;
+    });
   };
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <Header
+        bgColor={toggleDarkMode ? "bg-[#363636]" : "bg-[#FCFCFC]"}
         toggleLeftSideBar={toggleLeftSideBar}
         toggleRightSideBar={toggleRightSideBar}
         toggleDarkMode={toggleDarkMode}
-        fileName={fileName}
+        fileName={selectedFile?.filename}
         onToggleLeft={() => setToggleLeftSideBar((p) => !p)}
         onToggleRight={() => setToggleRightSideBar((p) => !p)}
         onToggleDark={() => setToggleDarkMode((p) => !p)}
@@ -58,31 +84,46 @@ function App() {
         <Sidebar
           isOpen={toggleLeftSideBar}
           width={leftWidth}
-          bgColor="bg-[#F6F6F6]"
+          bgColor={toggleDarkMode ? "bg-[#262626]" : "bg-[#F6F6F6]"}
           sidebarRef={leftSidebarRef}
-        />
+          side="left"
+        >
+          <FileBox
+            files={files}
+            selectedFile={selectedFile}
+            onSelect={setSelectedFile}
+            onDelete={handleDelete}
+          />
+        </Sidebar>
 
         <Resizer
           isVisible={toggleLeftSideBar}
           side="left"
           onResizeStart={startResizing}
+          bgColor={toggleDarkMode ? "bg-[#1e1e1e]" : "bg-white"}
         />
 
         {/* MAIN */}
-        <Main file={fileContent} onFileChange={handleFileChange} />
+        <Main
+          file={selectedFile}
+          onFileChange={handleFileChange}
+          bgColor={toggleDarkMode ? "bg-[#1e1e1e]" : "bg-white"}
+        />
 
         <Resizer
           isVisible={toggleRightSideBar}
           side="right"
           onResizeStart={startResizing}
+          bgColor={toggleDarkMode ? "bg-[#1e1e1e]" : "bg-white"}
         />
 
         {/* RIGHT */}
         <Sidebar
           isOpen={toggleRightSideBar}
           width={rightWidth}
-          bgColor="bg-[#F6F6F6]"
+          bgColor={toggleDarkMode ? "bg-[#262626]" : "bg-[#F6F6F6]"}
           sidebarRef={rightSidebarRef}
+          side="right"
         />
       </div>
     </div>

@@ -1,11 +1,18 @@
-const Resizer = ({ isVisible, side, onResizeStart }) => {
+const Resizer = ({ isVisible, side, onResizeStart, bgColor }) => {
   if (!isVisible) return null;
-
 
   return (
     <div
       onMouseDown={(e) => onResizeStart(side, e)}
-      className="w-1 cursor-col-resize bg-gray-300 hover:bg-gray-400"
+      className={`
+        w-1
+        ${bgColor}
+        cursor-col-resize
+        hover:bg-yellow-400
+        transition-colors
+        duration-150
+        `
+      }
     />
   );
 };

@@ -9,5 +9,5 @@ export const uploadFile = async (file) => {
 
   const data = await res.json();
 
-  return data?.content || JSON.stringify(data);
+  return data;
 };
