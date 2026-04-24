@@ -1,4 +1,4 @@
-function FileUnit({ file, isActive, onSelect, onDelete }) {
+function FileUnit({ darkMode, file, isActive, onSelect, onDelete }) {
   return (
     <div
       className={`
@@ -8,28 +8,28 @@ function FileUnit({ file, isActive, onSelect, onDelete }) {
         rounded-md
         cursor-pointer
         transition
-        ${isActive ? "bg-gray-300" : "hover:bg-gray-200"}
+        ${isActive ? `${darkMode? "bg-[#353535]" : "bg-gray-300"}` 
+        : `${darkMode? "hover:bg-[#333]": "hover:bg-gray-200"}` }
       `}
       onClick={() => onSelect(file)}
     >
       {/* filename */}
-      <span className="truncate flex-1 text-gray-800">
+      <span className={`truncate flex-1 ${darkMode? "text-gray-300": "text-gray-800"} `}>
         {file.filename}
       </span>
 
       {/* delete button */}
       <button
-        className="
+        className={`
           ml-2
           px-2 py-0.5
           text-xs
-          text-gray-500
           rounded
-          hover:bg-gray-400
-          hover:text-black
-
+          ${darkMode? "text-gray-300": "text-gray-600"}
+          ${darkMode? "hover:bg-[#444]": "hover:bg-gray-400"}
+          ${darkMode? "hover:text-white": "hover:text-black"}
           transition
-        "
+        `}
         onClick={(e) => {
           e.stopPropagation();
           onDelete(file.id);

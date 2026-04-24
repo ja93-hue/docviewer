@@ -1,4 +1,3 @@
-import styles from "./Header.module.css";
 import IconButton from "./IconButton";
 
 import {
@@ -6,12 +5,13 @@ import {
   BsReverseLayoutSidebarInsetReverse,
 } from "react-icons/bs";
 
+import { IoIosSunny } from "react-icons/io";
+
 import { MdDarkMode, MdOutlineDarkMode } from "react-icons/md";
 import { TbFileUpload } from "react-icons/tb";
 import { useRef } from "react";
 
 const Header = ({
-  bgColor,
   toggleLeftSideBar,
   toggleRightSideBar,
   toggleDarkMode,
@@ -29,12 +29,23 @@ const Header = ({
 
   return (
     <header
-      className={`${styles.header} px-2 flex justify-between ${bgColor} items-center border-b border-gray-300`}
+      className={`w-screen h-[7vh] text-[#333] px-2 flex justify-between 
+      ${toggleDarkMode ? "bg-[#363636]" : "bg-[#FCFCFC]"}
+      items-center border-b 
+      ${toggleDarkMode? 'border-[#444444]' : 'border-[#CCCCCC]'}`}
     >
       {/* LEFT */}
       <div className="flex items-center gap-2">
-        <IconButton onClick={onToggleLeft} title="Toggle left sidebar">
-          {toggleLeftSideBar ? (
+
+        {/* LEFT SIDEBAR */}
+        <IconButton darkMode={toggleDarkMode} onClick={onToggleLeft} title="Toggle left sidebar">
+          {toggleDarkMode ? (
+            toggleLeftSideBar ? (
+              <BsReverseLayoutSidebarInsetReverse className="text-xl text-[#dbdbdb]" />
+            ) : (
+              <BsLayoutSidebarInset className="text-xl text-[#dbdbdb]" />
+            )
+          ) : toggleLeftSideBar ? (
             <BsReverseLayoutSidebarInsetReverse className="text-xl" />
           ) : (
             <BsLayoutSidebarInset className="text-xl" />
@@ -42,7 +53,7 @@ const Header = ({
         </IconButton>
 
         <div
-          className="max-w-[200px] truncate text-[0.97rem]"
+          className={`max-w-[200px] truncate text-[0.94rem] ${toggleDarkMode? "text-gray-300": "text-gray-800"}`}
           title={fileName || "No file selected"}
         >
           {fileName || "No File"}
@@ -58,21 +69,34 @@ const Header = ({
           onChange={onFileChange}
         />
 
-        <IconButton onClick={handleFileClick} title="Open file">
-          <TbFileUpload className="text-[1.40rem]" />
+        {/*UPLOAD FILE*/}
+        <IconButton darkMode={toggleDarkMode} onClick={handleFileClick} title="Open file">
+          {toggleDarkMode ? (
+            <TbFileUpload className="text-[1.40rem] text-[#dbdbdb]" />
+          ) : (
+            <TbFileUpload className="text-[1.40rem]" />
+          )}
         </IconButton>
 
-        <IconButton onClick={onToggleRight} title="Toggle right sidebar">
-          {toggleRightSideBar ? (
+        {/*RIGHT SIDEBAR*/}
+        <IconButton darkMode={toggleDarkMode} onClick={onToggleRight} title="Toggle right sidebar">
+          {toggleDarkMode ? (
+            toggleRightSideBar ? (
+              <BsLayoutSidebarInset className="text-xl text-[#dbdbdb]" />
+            ) : (
+              <BsReverseLayoutSidebarInsetReverse className="text-xl text-[#dbdbdb]" />
+            )
+          ) : toggleRightSideBar ? (
             <BsLayoutSidebarInset className="text-xl" />
           ) : (
             <BsReverseLayoutSidebarInsetReverse className="text-xl" />
           )}
         </IconButton>
 
-        <IconButton onClick={onToggleDark} title="Toggle theme">
+        {/*DARK MODE*/}
+        <IconButton darkMode={toggleDarkMode} onClick={onToggleDark} title="Toggle theme">
           {toggleDarkMode ? (
-            <MdOutlineDarkMode className="text-yellow-400 text-xl" />
+            <IoIosSunny className="text-yellow-400 text-[1.50rem]"/>
           ) : (
             <MdDarkMode className="text-xl" />
           )}
@@ -83,3 +107,14 @@ const Header = ({
 };
 
 export default Header;
+
+/*.left{
+    height: 100%;
+    width: 50%;
+}
+
+.right{
+    height: 100%;
+    width: 50%;
+}
+    */

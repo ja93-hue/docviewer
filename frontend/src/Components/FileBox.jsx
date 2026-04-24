@@ -1,10 +1,10 @@
 import FileUnit from "./FileUnit";
 import "../global.css";
 
-function FileBox({ files = [], selectedFile, onSelect, onDelete }) {
+function FileBox({ darkMode, files = [], selectedFile, onSelect, onDelete }) {
   if (!files.length) {
     return (
-      <div className="p-2 text-gray-500 text-sm">
+      <div className={`p-2 ${darkMode? "text-gray-400": "text-gray-500"} text-sm`}>
         No files uploaded
       </div>
     );
@@ -15,6 +15,7 @@ function FileBox({ files = [], selectedFile, onSelect, onDelete }) {
       {files.map((file) => (
         <FileUnit
           key={file.id}
+          darkMode={darkMode}
           file={file}
           isActive={selectedFile?.id === file.id}
           onSelect={onSelect}

@@ -1,8 +1,8 @@
-import Header from "./Components/Header";
-import Sidebar from "./Components/Sidebar";
-import Main from "./Components/Main";
-import Resizer from "./Components/Resizer";
-import FileBox from "./Components/FileBox";
+import Header from "./components/Header";
+import Sidebar from "./components/Sidebar";
+import Main from "./components/Main";
+import Resizer from "./components/Resizer";
+import FileBox from "./components/FileBox";
 
 import { useState, useRef } from "react";
 import useResizablePanels from "./hooks/useResizablePanels";
@@ -68,7 +68,6 @@ function App() {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <Header
-        bgColor={toggleDarkMode ? "bg-[#363636]" : "bg-[#FCFCFC]"}
         toggleLeftSideBar={toggleLeftSideBar}
         toggleRightSideBar={toggleRightSideBar}
         toggleDarkMode={toggleDarkMode}
@@ -84,12 +83,13 @@ function App() {
         <Sidebar
           isOpen={toggleLeftSideBar}
           width={leftWidth}
-          bgColor={toggleDarkMode ? "bg-[#262626]" : "bg-[#F6F6F6]"}
+          darkMode={toggleDarkMode}
           sidebarRef={leftSidebarRef}
           side="left"
         >
           <FileBox
             files={files}
+            darkMode={toggleDarkMode}
             selectedFile={selectedFile}
             onSelect={setSelectedFile}
             onDelete={handleDelete}
@@ -100,28 +100,28 @@ function App() {
           isVisible={toggleLeftSideBar}
           side="left"
           onResizeStart={startResizing}
-          bgColor={toggleDarkMode ? "bg-[#1e1e1e]" : "bg-white"}
+          darkMode={toggleDarkMode}
         />
 
         {/* MAIN */}
         <Main
           file={selectedFile}
           onFileChange={handleFileChange}
-          bgColor={toggleDarkMode ? "bg-[#1e1e1e]" : "bg-white"}
+          darkMode={toggleDarkMode}
         />
 
         <Resizer
           isVisible={toggleRightSideBar}
           side="right"
           onResizeStart={startResizing}
-          bgColor={toggleDarkMode ? "bg-[#1e1e1e]" : "bg-white"}
+          darkMode={toggleDarkMode}
         />
 
         {/* RIGHT */}
         <Sidebar
           isOpen={toggleRightSideBar}
           width={rightWidth}
-          bgColor={toggleDarkMode ? "bg-[#262626]" : "bg-[#F6F6F6]"}
+          darkMode={toggleDarkMode}
           sidebarRef={rightSidebarRef}
           side="right"
         />
